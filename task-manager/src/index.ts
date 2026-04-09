@@ -1,8 +1,9 @@
 import * as readLine from 'readline-sync';
-import { TaskManager } from './taskManager';
-import { Task } from './types';
+import { TaskManager } from './taskManager.js';
+import 'reflect-metadata';
 
 const manager = new TaskManager();
+
 
 console.log("manager started");
 
@@ -11,6 +12,7 @@ while (true) {
     const input = readLine.question('\n What would you like to do? add / complete / list / quit\n').trim().toLowerCase();
 
     if ('quit' == input) {
+       await manager.saveState();
         console.log('bye');
         break;
     }

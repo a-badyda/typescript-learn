@@ -1,7 +1,10 @@
-import { Task, TaskStatus } from './types';
+import { Task } from './task.js';
+import { TaskStatus } from './types.js';
+
 
 export class TaskManager {
-  private tasks: Task[] = [];
+  tasks: Task[] = Task.loadSavedTasks();
+
 
   addTask(title: string, description?: string): Task {
     const task: Task = {
@@ -11,18 +14,18 @@ export class TaskManager {
       status: TaskStatus.PENDING,
       createdAt: new Date()
     };
-    
+
     this.tasks.push(task);
     return task;
   }
 
   completeTaskByTitle(title: string): Task | undefined {
-    const task =this.getTasks(TaskStatus.PENDING).find( t => t.title === title);
-    
-    if(task === undefined){
+    const task = this.getTasks(TaskStatus.PENDING).find(t => t.title === title);
+
+    if (task === undefined) {
       console.log('can\'t find task with title' + title);
       return undefined;
-    }else {
+    } else {
       task.status = TaskStatus.COMPLETED;
       task.completedAt = new Date();
       return task;
@@ -32,7 +35,7 @@ export class TaskManager {
   //run this every time program is initalised? maybe every X  mins while it's running
   archiveAllCompletedTasks() {
     const allCompleted = this.getTasks(TaskStatus.COMPLETED);
-    allCompleted.forEach( t => t.status = TaskStatus.ARCHIVED);
+    allCompleted.forEach(t => t.status = TaskStatus.ARCHIVED);
   }
 
 
@@ -46,5 +49,9 @@ export class TaskManager {
     task.status = TaskStatus.COMPLETED;
     task.completedAt = new Date();
     return true;
+  }
+
+  async saveState() {
+    await Task.saveTasksToFile(this.tasks);
   }
 }

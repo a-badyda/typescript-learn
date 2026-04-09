@@ -7,10 +7,12 @@
     "outDir": "./dist",
     "rootDir": "./src",
 
-    "types": [],
+    "resolveJsonModule": true,
+
+
     // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
+    "lib": ["esnext"],
+    "types": ["node"],
     // and npm install -D @types/node
 
     // Other Outputs
