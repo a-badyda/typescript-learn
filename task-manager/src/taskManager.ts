@@ -1,9 +1,24 @@
 import { Task } from './task.js';
 import { TaskStatus } from './types.js';
+import { AiService } from './config/aiService.js';
+import { ANTHROPIC_CONFIG } from './config/config.js';
 
 
 export class TaskManager {
   tasks: Task[] = Task.loadSavedTasks();
+  private aiService?: AiService;
+
+  constructor(useAI: boolean = false) {
+    if (useAI) {
+      try {
+        this.aiService = new AiService();
+        console.log('AI service initialized with Claude');
+      } catch (error) {
+        console.warn('AI initialization failed:', error);
+        console.log('Continuing without AI features');
+      }
+    }
+  }
 
 
   addTask(title: string, description?: string): Task {

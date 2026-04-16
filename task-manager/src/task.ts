@@ -1,4 +1,4 @@
-import jsonObject from '../resources/tasks.json';
+import jsonObject from '../resources/tasks.json' with { type: 'json' };
 import { TaskStatus } from './types.js';
 import { plainToInstance } from 'class-transformer';
 import { writeFile } from 'fs/promises';
