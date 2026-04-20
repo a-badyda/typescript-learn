@@ -57,7 +57,8 @@ export class AiService {
       return response.data.content[0].text;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('Ai API error:', error.response?.data || error.message);
+        //atm it is erroring 
+        console.error('Ai API error:', error.response?.data || "woops");
         
         // Handle rate limits
         if (error.response?.status === 429) {
@@ -73,8 +74,24 @@ export class AiService {
     }
   }
 
+  async parseTasksFromInput(userInput: string): Promise<Array<{title: string, description?: string}>> {
+
+    const rawText = await this.generateCompletion(
+      [{ role: 'user', content: userInput }],
+      this.config.systemPrompt
+    );
+
+    // Claude might still wrap in ```json ... ```
+    const cleaned = rawText.replace(/```json|```/g, '').trim();
+
+    const parsed = JSON.parse(cleaned); // can throw — handle it
+
+    return parsed;
+  }
+
+
   // Helper method for single prompt
   async generateFromPrompt(prompt: string): Promise<string> {
-    return this.generateCompletion([{ role: 'user', content: prompt }]);
+    return this.generateCompletion([{ role: 'user', content: prompt }], this.config.systemPrompt);
   }
 }

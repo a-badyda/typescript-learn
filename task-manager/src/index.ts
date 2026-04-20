@@ -1,8 +1,12 @@
 import * as readLine from 'readline-sync';
 import { TaskManager } from './taskManager.js';
 import 'reflect-metadata';
+import { AiService } from './config/aiService.js';
 
-const manager = new TaskManager();
+
+
+const enableAi = true; //change to param from startup
+const manager = new TaskManager(enableAi);
 
 
 console.log("manager started");
@@ -17,7 +21,12 @@ while (true) {
         break;
     }
 
-    if ('add' == input) {
+    if('add' == input && enableAi) {
+        const message = readLine.question('Describe your task(s): ');
+        await manager.addTasksAi(message);
+    }
+
+    if ('add' == input && !enableAi) {
         const title = readLine.question('enter title: ');
         const description = readLine.question('enter description (optional): ');
         //trim out empty answer - maybe move this to 'add task' checks tbh

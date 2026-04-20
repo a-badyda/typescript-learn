@@ -1,7 +1,6 @@
 import { Task } from './task.js';
 import { TaskStatus } from './types.js';
 import { AiService } from './config/aiService.js';
-import { ANTHROPIC_CONFIG } from './config/config.js';
 
 
 export class TaskManager {
@@ -16,6 +15,22 @@ export class TaskManager {
       } catch (error) {
         console.warn('AI initialization failed:', error);
         console.log('Continuing without AI features');
+      }
+    }
+  }
+
+  async addTasksAi(content: string) {
+    if(undefined === this.aiService ) {
+      console.log("not available w/o AI enabled")
+    }
+    else {
+      console.log("asking llm");
+      var parsed = await this.aiService.parseTasksFromInput(content);
+          
+      for(var i = 0; i < parsed.length; i ++) {
+        if(parsed[i] !== undefined){
+          this.addTask(parsed[i].title, parsed[i].description);
+        }
       }
     }
   }
